@@ -4,7 +4,8 @@ import { MetricCard } from "@/components/dashboard/metric-card";
 import { Button } from "@/components/ui/button";
 import { AdminConsole } from "@/components/admin/admin-console";
 import { getSessionToken, verifySessionToken } from "@/server/lib/auth";
-import { getAdminDashboard, getSessionUserById, listUsers, listWinners, listCharities } from "@/server/services";
+import { toPlainJson } from "@/server/lib/serialize";
+import { getAdminDashboard, getAdminUsers, getSessionUserById, listWinners, listCharities } from "@/server/services";
 import { toCurrency } from "@/server/lib/utils";
 
 export default async function AdminPage() {
@@ -16,10 +17,15 @@ export default async function AdminPage() {
 
   const [dashboard, users, winners, charities] = await Promise.all([
     getAdminDashboard(),
-    listUsers(),
+    getAdminUsers(),
     listWinners(),
     listCharities()
   ]);
+
+  const plainUsers = toPlainJson(users);
+  const plainWinners = toPlainJson(winners);
+  const plainCharities = toPlainJson(charities);
+  const plainDashboard = toPlainJson(dashboard);
 
   return (
     <DashboardShell
@@ -39,7 +45,12 @@ export default async function AdminPage() {
         <MetricCard label="Prize pool" value={toCurrency(dashboard.totalPrizePool)} detail="Across published draws." />
         <MetricCard label="Charity contributions" value={toCurrency(dashboard.totalContributions)} detail="Subscription-linked contributions only." />
       </section>
-      <AdminConsole users={users as any[]} winners={winners as any[]} charities={charities as any[]} dashboard={dashboard as any} />
+      <AdminConsole
+        users={plainUsers as any[]}
+        winners={plainWinners as any[]}
+        charities={plainCharities as any[]}
+        dashboard={plainDashboard as any}
+      />
     </DashboardShell>
   );
 }

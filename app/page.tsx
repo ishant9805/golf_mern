@@ -88,16 +88,28 @@ export default function HomePage() {
       </section>
 
       <section className="section-shell py-10">
-        <Card className="grid gap-6 bg-[var(--foreground)] text-white md:grid-cols-[0.9fr_1.1fr]">
-          <div>
-            <p className="text-sm uppercase tracking-[0.2em] text-white/60">Built for confidence</p>
-            <h2 className="mt-4 text-4xl font-black tracking-tight">Transparent prize rules, visible impact, and admin-ready control.</h2>
-          </div>
-          <div className="grid gap-4 text-sm text-white/75 md:grid-cols-2">
-            <p>Automatic rolling score window of five entries with validation and duplicate protection.</p>
-            <p>Stripe subscription lifecycle synced by webhooks so subscriber access follows payment state.</p>
-            <p>Admin simulation mode lets you preview weighted or random draws before publishing official results.</p>
-            <p>Winner proof uploads and payout tracking keep the verification flow accountable end to end.</p>
+        <Card className="p-3">
+          <div
+            className="grid gap-6 rounded-[24px] p-6 md:grid-cols-[0.9fr_1.1fr] md:p-8"
+            style={{ background: "linear-gradient(135deg, #102418 0%, #1f5f57 100%)", color: "#fffaf2" }}
+          >
+            <div>
+              <p className="text-sm uppercase tracking-[0.2em]" style={{ color: "rgba(255, 250, 242, 0.7)" }}>
+                Built for confidence
+              </p>
+              <h2 className="mt-4 text-4xl font-black tracking-tight">
+                Transparent prize rules, visible impact, and admin-ready control.
+              </h2>
+            </div>
+            <div
+              className="grid gap-4 text-sm md:grid-cols-2"
+              style={{ color: "rgba(255, 250, 242, 0.84)" }}
+            >
+              <p>Automatic rolling score window of five entries with validation and duplicate protection.</p>
+              <p>Stripe subscription lifecycle synced by webhooks so subscriber access follows payment state.</p>
+              <p>Admin simulation mode lets you preview weighted or random draws before publishing official results.</p>
+              <p>Winner proof uploads and payout tracking keep the verification flow accountable end to end.</p>
+            </div>
           </div>
         </Card>
       </section>

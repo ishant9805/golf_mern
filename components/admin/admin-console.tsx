@@ -16,6 +16,7 @@ type AdminConsoleProps = {
 async function sendJson(url: string, method: string, body?: unknown) {
   const response = await fetch(url, {
     method,
+    credentials: "same-origin",
     headers: {
       "Content-Type": "application/json"
     },
@@ -175,8 +176,8 @@ export function AdminConsole({ users, winners, charities, dashboard }: AdminCons
         </div>
         <div className="rounded-2xl bg-white/70 p-4">
           <div className="grid gap-3 md:grid-cols-2">
-            <input value={newCharity.name} onChange={(event) => setNewCharity((state) => ({ ...state, name: event.target.value }))} placeholder="New charity name" className="rounded-2xl border border-black/10 bg-white px-4 py-3" />
-            <input value={newCharity.slug} onChange={(event) => setNewCharity((state) => ({ ...state, slug: event.target.value }))} placeholder="new-charity-slug" className="rounded-2xl border border-black/10 bg-white px-4 py-3" />
+            <input value={newCharity.name} onChange={(event) => setNewCharity((state) => ({ ...state, name: event.target.value, slug: event.target.value.toLowerCase().replace(/\s+/g, '-') }))} placeholder="New charity name" className="rounded-2xl border border-black/10 bg-white px-4 py-3" />
+            <input value={newCharity.slug} placeholder="new-charity-slug" className="rounded-2xl border border-black/40 bg-gray-200 px-4 py-3" disabled/>
             <input value={newCharity.imageUrl} onChange={(event) => setNewCharity((state) => ({ ...state, imageUrl: event.target.value }))} placeholder="Image URL" className="rounded-2xl border border-black/10 bg-white px-4 py-3" />
             <input value={newCharity.location} onChange={(event) => setNewCharity((state) => ({ ...state, location: event.target.value }))} placeholder="Location" className="rounded-2xl border border-black/10 bg-white px-4 py-3" />
             <textarea value={newCharity.description} onChange={(event) => setNewCharity((state) => ({ ...state, description: event.target.value }))} placeholder="Description" className="min-h-24 rounded-2xl border border-black/10 bg-white px-4 py-3 md:col-span-2" />
@@ -252,7 +253,14 @@ export function AdminConsole({ users, winners, charities, dashboard }: AdminCons
                   disabled={isPending}
                   onClick={() =>
                     runAction(async () => {
-                      await fetch(`/api/admin/charities/${charity.id}`, { method: "DELETE" });
+                      const response = await fetch(`/api/admin/charities/${charity.id}`, {
+                        method: "DELETE",
+                        credentials: "same-origin"
+                      });
+                      const result = await response.json();
+                      if (!response.ok) {
+                        throw new Error(result.error ?? "Unable to delete charity.");
+                      }
                       setMessage("Charity deleted.");
                     })
                   }
