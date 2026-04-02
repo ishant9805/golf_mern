@@ -51,6 +51,8 @@ npm install
 ```
 
 2. Copy `.env.example` to `.env` and fill in all values.
+   Runtime should use the pooled Supabase connection string in `DATABASE_URL`.
+   Prisma CLI should use the direct database connection in `DIRECT_URL`.
 
 3. Generate Prisma client and run migrations:
 
@@ -74,10 +76,22 @@ npm run dev
 ## Supabase Setup
 
 1. Create a new Supabase project.
-2. Copy the Postgres connection string into `DATABASE_URL`.
-3. Create a public or private storage bucket matching `SUPABASE_STORAGE_BUCKET`, for example `winner-proofs`.
-4. Add the project URL to `NEXT_PUBLIC_SUPABASE_URL`.
-5. Add the service role key to `SUPABASE_SERVICE_ROLE_KEY`.
+2. Set `DATABASE_URL` to the Supavisor transaction pooler connection string and append `?pgbouncer=true`.
+3. Set `DIRECT_URL` to the direct database connection string from Supabase.
+4. Create a public or private storage bucket matching `SUPABASE_STORAGE_BUCKET`, for example `winner-proofs`.
+5. Add the project URL to `NEXT_PUBLIC_SUPABASE_URL`.
+6. Add the service role key to `SUPABASE_SERVICE_ROLE_KEY`.
+
+Connection guidance:
+
+- `DATABASE_URL`
+  Use the pooled Supabase URL for application runtime. Example:
+  `postgresql://postgres.your-project-ref:password@aws-0-your-region.pooler.supabase.com:6543/postgres?pgbouncer=true`
+- `DIRECT_URL`
+  Use the direct database URL for Prisma CLI commands. Example:
+  `postgresql://postgres:password@db.your-project-ref.supabase.co:5432/postgres`
+
+This split follows Prisma and Supabase guidance for Prisma + Supavisor and helps avoid connection resets and pooler-related runtime failures.
 
 ## Stripe Setup
 
